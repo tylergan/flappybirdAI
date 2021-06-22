@@ -1,0 +1,54 @@
+**********************************************************************************************************
+* This code was adapted from the following source and is only used for learning to develop AI using NEAT *
+* https://www.youtube.com/watch?v=MMxFDaIOHsE&list=PLzMcBGfZo4-lwGZWXz5Qgta_YNX3_vLS2                    *
+**********************************************************************************************************
+
+This program contains the follwing files:
+    1. bird.py
+    2. draw_window.py
+    3. floor.py
+    3. genome_eval.py
+    4. pipe.py
+    5. run_AI.py
+
+Key design choices are explained here:
+1. ===== bird.py =====
+
+"bird.py" contains the Bird class which is the subject of the game. Standard functions are implemented here to simulate the game, such as the jump function and a move method
+which simply moves flappy bird up (if the jump the method is used) and then down (when the jump method is not used). Additionally, flappy bird will tilt depending on whether
+it is above its neutral position and vice versa.
+
+Additionally, the use of an array and a modulus function allows to transition between flappy bird animations, giving it the illusion that it is flapping its wings.
+
+2. ===== floor.py =====
+
+"floor.py" contains the Floor class which uses two floor images to cycle constantly cycle, giving it the idea that the floor is "infinite"; this is defined in the move
+method.
+
+3. ===== genome_eval.py =====
+
+This program contains both game logic and the NEAT algorithm. Simply, it creates an array of flappy birds and genomes which are then added to the neural network which will be
+used to help the ANN learn. A lot of logic is explained via comments and variable names. However, simply put:
+    1. We initilise the ANN
+    2. We setup the game
+    3. We run the main loop which:
+        a. Rewards any birds for moving forward.
+        b. Punishes any birds for hitting the pipes.
+        c. Rewards any birds for passing the pipes.
+        d. Runs any additional logic such as:
+            i. Whether to focus on the next set of pipes once the first set of pipes have been passed,
+            ii. The removal of any pipes that have already been passed.
+            iii. The removal of any birds that have failed to pass the pipes successfully, leaving the fittest to continue mutating.
+
+4. ===== pipe.py =====
+
+"pipe.py" contains the Pipe class. Importantly, these are what will make flappy bird lose if flappy bird collides with the pipe (and is what we will define as a punishment
+for the bird). A technique called "masking" is used which only consideres the pixels located in the sprite itself, rather than a rectangular hitbox; this allows for perfect
+pixel collision, of which this is already done for us by PyGame:
+    1. Obtain the masks for the bird, top and bottom pipe (pygame.mask.from_surface(IMG))
+    2. Calculate the offset for each pipe (pipe pos.x - bird pos.x, pipe pos.y - bird.pos.y)
+    3. Determine if there is any overlap with the bird mask and the pipe mask (with the offset included)
+        a. e.g. bird_mask.overlap(bottom_pipe_mask, bottom_offset)
+
+INFORMATION PERTAINING TO THE CONFIG FILE CAN BE FOUND HERE:
+https://neat-python.readthedocs.io/en/latest/
